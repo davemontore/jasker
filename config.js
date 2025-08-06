@@ -3,14 +3,13 @@
 
 const config = {
     // Firebase Configuration
-    // You'll need to replace these with your actual Firebase project credentials
     firebase: {
-        apiKey: "YOUR_FIREBASE_API_KEY",
-        authDomain: "YOUR_FIREBASE_AUTH_DOMAIN",
-        projectId: "YOUR_FIREBASE_PROJECT_ID",
-        storageBucket: "YOUR_FIREBASE_STORAGE_BUCKET",
-        messagingSenderId: "YOUR_FIREBASE_MESSAGING_SENDER_ID",
-        appId: "YOUR_FIREBASE_APP_ID"
+        apiKey: "AIzaSyBSheMk79-CssbP-GIzvRw-nMifWZZT4cE",
+        authDomain: "jasker-3568c.firebaseapp.com",
+        projectId: "jasker-3568c",
+        storageBucket: "jasker-3568c.firebasestorage.app",
+        messagingSenderId: "268015491598",
+        appId: "1:268015491598:web:6e5cbe76369baebb8e7a5f"
     },
     
     // OpenAI Configuration
