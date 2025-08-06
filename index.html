@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jasker - Your Personal Bard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- Authentication Screen -->
+        <div id="auth-screen" class="screen active">
+            <div class="auth-container">
+                <div class="logo">
+                    <h1>Jasker</h1>
+                    <p class="tagline">Your Personal Bard</p>
+                </div>
+                <div class="auth-form">
+                    <button id="google-signin" class="auth-btn google-btn">
+                        <span>Continue with Google</span>
+                    </button>
+                    <button id="apple-signin" class="auth-btn apple-btn">
+                        <span>Continue with Apple</span>
+                    </button>
+                    <button id="microsoft-signin" class="auth-btn microsoft-btn">
+                        <span>Continue with Microsoft</span>
+                    </button>
+                    <div class="divider">
+                        <span>or</span>
+                    </div>
+                    <button id="email-signin" class="auth-btn email-btn">
+                        <span>Sign in with Email</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App Interface -->
+        <div id="main-app" class="screen">
+            <!-- Header -->
+            <header class="app-header">
+                <div class="header-left">
+                    <h2>Jasker</h2>
+                    <span class="user-info" id="user-info"></span>
+                </div>
+                <nav class="app-nav">
+                    <button id="lounge-btn" class="nav-btn active">The Lounge</button>
+                    <button id="library-btn" class="nav-btn">The Library</button>
+                </nav>
+                <div class="header-right">
+                    <button id="signout-btn" class="signout-btn">Sign Out</button>
+                </div>
+            </header>
+
+            <!-- The Lounge -->
+            <div id="lounge-screen" class="app-screen active">
+                <div class="lounge-container">
+                    <div class="conversation-area">
+                        <div id="conversation-history" class="conversation-history">
+                            <!-- Messages will be added here -->
+                        </div>
+                        <div class="input-area">
+                            <div class="voice-controls">
+                                <button id="voice-btn" class="voice-btn">
+                                    <span class="voice-icon">🎤</span>
+                                    <span class="voice-text">Hold to Speak</span>
+                                </button>
+                                <div class="voice-status" id="voice-status"></div>
+                            </div>
+                            <div class="text-input-container">
+                                <textarea id="text-input" placeholder="Or type your thoughts here..." rows="3"></textarea>
+                                <button id="send-btn" class="send-btn">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- The Library -->
+            <div id="library-screen" class="app-screen">
+                <div class="library-container">
+                    <div class="library-header">
+                        <h3>Your Collection</h3>
+                        <div class="library-tabs">
+                            <button class="tab-btn active" data-tab="stories">Core Stories</button>
+                            <button class="tab-btn" data-tab="bullets">Resume Bullets</button>
+                            <button class="tab-btn" data-tab="threads">Contextual Threads</button>
+                        </div>
+                    </div>
+                    <div class="library-content">
+                        <div id="stories-tab" class="tab-content active">
+                            <div class="bookshelf">
+                                <!-- Core Stories will be displayed as books -->
+                            </div>
+                        </div>
+                        <div id="bullets-tab" class="tab-content">
+                            <div class="magazine-rack">
+                                <!-- Resume bullets will be displayed as magazines -->
+                            </div>
+                        </div>
+                        <div id="threads-tab" class="tab-content">
+                            <div class="library-tables">
+                                <!-- Contextual threads will be displayed on tables -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="auth.js"></script>
+    <script src="conversation.js"></script>
+    <script src="library.js"></script>
+    <script src="app.js"></script>
+</body>
+</html> 
