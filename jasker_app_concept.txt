@@ -1,0 +1,36 @@
+Product Requirements Prompt: "Jasker"
+1. Product Name (Working Title)
+Jasker
+2. One-Sentence Idea Description
+An AI-powered conversational coach that helps military service members discover their accomplishments, craft them into powerful resume bullets and interview stories, and learn the art of effective storytelling.
+3. User Journey / Flow
+Onboarding: User signs up for a secure account. The app immediately initiates a friendly, voice-first (but text-capable) conversational interface.
+Conversational Mining: The AI acts as a "detective," asking calibrated questions to help the user uncover "base hits" and quantifiable achievements from their career, starting from a blank slate. The user can speak for long stretches without interruption.
+Story Repository: As resume bullets and STAR story ideas are uncovered, the AI automatically saves, tags, and organizes them in a personal, searchable repository.
+AI-Powered Connections: Inspired by mymind, the AI passively analyzes the user's "brain dump" to find connections, patterns, and transferable skills, suggesting new angles for stories.
+Output: The user can easily access, edit, and export their finalized resume bullets and STAR stories.
+4. Target Audience
+Primary: U.S. military service members within 1-2 years of transitioning to civilian life.
+Secondary: Veterans who have been out for a while and are looking to change careers or better articulate their experience.
+Key Pain Point: They struggle to recognize and articulate their own accomplishments in a way that resonates with civilian employers, often feeling like their experience was "average."
+5. Core Features (Version 1.0)
+Secure User Accounts: Multi-user login system to save and protect user data.
+The Lounge: The primary user interface, a dedicated voice-first conversational space for interacting with the Jasker AI.
+The Library: A distinct section of the app that acts as an automated, structured repository for viewing, editing, tagging, organizing, and exporting all generated Core Stories and resume bullets. For graphic design considerations, Core Stories are stored on the “bookshelf”, and resume bullets are stored on the “magazine rack”. 
+Long-Form Transcription & Analysis: Utilizes AssemblyAI to accurately transcribe and analyze long, uninterrupted user monologues within the Lounge.
+Conversational AI Interface: A voice-first (with text option) chat interface powered by OpenAI's voice models.
+Long-Form Transcription & Analysis: Utilizes AssemblyAI to accurately transcribe and analyze long, uninterrupted user monologues.
+AI Connection Engine: An underlying AI that finds patterns and suggests different storytelling "angles" based on the user's collected stories.
+Cozy, Welcoming UI: A web-based application with an elegant interface (creme background, black Courier-style font) that is fully responsive for mobile browser use, and that uses elegant graphics and design choices to indicate that the user is in either a lounge or a library. 
+6. Suggested Tools & Stack
+Frontend: Responsive HTML/CSS, JavaScript, Three.js.
+Backend/Database: Firebase (for user authentication and Firestore database).
+AI - Voice & Conversation: OpenAI (for voice mode and conversational logic).
+AI - Transcription & Analysis: AssemblyAI (for high-accuracy, long-form speech-to-text).
+7. Vibe & Design Notes
+Vibe: A trusted coach, an insightful detective, a personal historian. The feeling should be supportive, patient, curious, and empowering, but not patronizing. 
+Design: Cozy, elegant, and focused. A warm, text-centric interface that avoids distractions and feels like a premium, private social club.
+8. Future Feature Ideas
+Job Description Analysis: Allow users to upload a job description, and have the AI recommend the most relevant stories from their repository and suggest specific angles.
+In-Depth Storytelling Coaching: Integrate tactical storytelling advice from experts like Matthew Dicks (e.g., the "5-second moment," zooming in on details) and Jefferson Fisher (e.g., communication frameworks, de-escalation).
+Storytelling Practice Platform: A feature where users can verbally practice telling their stories, and the AI provides feedback on pacing, clarity, and impact.

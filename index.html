@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jasker - Your Personal Bard</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <title>Jasker - Your Personal Career Detective</title>
+    <link rel="stylesheet" href="styles.css?v=2.0">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
 </head>
 <body>
     <div id="app">
@@ -17,23 +18,20 @@
             <div class="auth-container">
                 <div class="logo">
                     <h1>Jasker</h1>
-                    <p class="tagline">Your Personal Bard</p>
+                    <p class="tagline">Your Personal Career Detective</p>
                 </div>
                 <div class="auth-form">
                     <button id="google-signin" class="auth-btn google-btn">
                         <span>Continue with Google</span>
                     </button>
-                    <button id="apple-signin" class="auth-btn apple-btn">
-                        <span>Continue with Apple</span>
-                    </button>
-                    <button id="microsoft-signin" class="auth-btn microsoft-btn">
-                        <span>Continue with Microsoft</span>
-                    </button>
-                    <div class="divider">
+                    <div class="auth-divider">
                         <span>or</span>
                     </div>
                     <button id="email-signin" class="auth-btn email-btn">
                         <span>Sign in with Email</span>
+                    </button>
+                    <button id="test-screen-switch" class="auth-btn" style="background: #666; color: white; margin-top: 10px;">
+                        <span>Test App (Skip Auth)</span>
                     </button>
                 </div>
             </div>
@@ -52,6 +50,7 @@
                     <button id="library-btn" class="nav-btn">The Library</button>
                 </nav>
                 <div class="header-right">
+                    <button id="api-settings-btn" class="signout-btn" style="margin-right: 10px; background: #2c5530;">API Settings</button>
                     <button id="signout-btn" class="signout-btn">Sign Out</button>
                 </div>
             </header>
@@ -60,19 +59,33 @@
             <div id="lounge-screen" class="app-screen active">
                 <div class="lounge-container">
                     <div class="conversation-area">
+                        <!-- Topic Display -->
+                        <div id="topic-display" class="topic-display">
+                            <div class="topic-content">
+                                <span class="topic-label">Currently discussing:</span>
+                                <span id="current-topic" class="current-topic">Your professional story</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Conversation History -->
                         <div id="conversation-history" class="conversation-history">
                             <!-- Messages will be added here -->
                         </div>
+                        
+                        <!-- Input Area -->
                         <div class="input-area">
                             <div class="voice-controls">
                                 <button id="voice-btn" class="voice-btn">
                                     <span class="voice-icon">🎤</span>
-                                    <span class="voice-text">Hold to Speak</span>
+                                    <span class="voice-text">Hold to speak</span>
                                 </button>
-                                <div class="voice-status" id="voice-status"></div>
+                                <button id="test-conversation" class="test-btn">Test Conversation</button>
                             </div>
+                            
+                            <div id="voice-status" class="voice-status">🎤 Click to speak</div>
+                            
                             <div class="text-input-container">
-                                <textarea id="text-input" placeholder="Or type your thoughts here..." rows="3"></textarea>
+                                <textarea id="text-input" placeholder="Or type your message here..." rows="3"></textarea>
                                 <button id="send-btn" class="send-btn">Send</button>
                             </div>
                         </div>
@@ -113,10 +126,37 @@
         </div>
     </div>
 
+    <script src="secure-config.js"></script>
     <script src="config.js"></script>
     <script src="auth.js"></script>
     <script src="conversation.js"></script>
     <script src="library.js"></script>
     <script src="app.js"></script>
+    
+    <script>
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize managers
+            window.authManager = new AuthManager();
+            window.conversationManager = new ConversationManager();
+            window.libraryManager = new LibraryManager();
+            
+            // Initialize the main app
+            window.jaskerApp = new JaskerApp();
+            
+            // Set up conversation manager event listeners
+            conversationManager.initializeEventListeners();
+            
+            // Fallback: Show welcome message after a short delay if no authentication occurs
+            setTimeout(() => {
+                if (window.jaskerApp && !window.authManager.isAuthenticated()) {
+                    console.log('Fallback: Showing welcome message after initialization delay');
+                    if (window.conversationManager) {
+                        window.conversationManager.forceShowWelcomeMessage();
+                    }
+                }
+            }, 2000);
+        });
+    </script>
 </body>
 </html> 

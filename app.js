@@ -30,15 +30,22 @@ class JaskerApp {
     }
 
     setupApp() {
-        // Initialize modules
-        this.modules.auth = authManager;
-        this.modules.conversation = conversationManager;
-        this.modules.library = libraryManager;
+        // Initialize modules (using global instances)
+        this.modules.auth = window.authManager;
+        this.modules.conversation = window.conversationManager;
+        this.modules.library = window.libraryManager;
 
         // Set up authentication state listener
         this.modules.auth.onAuthStateChanged((user) => {
             this.handleAuthStateChange(user);
         });
+
+        // Check if user is already authenticated (for page reloads)
+        const currentUser = this.modules.auth.getCurrentUser();
+        if (currentUser) {
+            console.log('User already authenticated on page load:', currentUser.email);
+            this.onUserAuthenticated(currentUser);
+        }
 
         // Set up global error handling
         this.setupErrorHandling();
@@ -50,7 +57,7 @@ class JaskerApp {
         this.setupServiceWorker();
 
         this.isInitialized = true;
-        console.log('Jasker initialized successfully');
+        console.log('Jasker initialized successfully with temporal-spatial mapping');
     }
 
     handleAuthStateChange(user) {
@@ -66,11 +73,14 @@ class JaskerApp {
     }
 
     onUserAuthenticated(user) {
+        console.log('onUserAuthenticated called with user:', user);
+        
         // Load user-specific data
         this.loadUserData(user);
         
-        // Show welcome message if it's a new user
-        this.checkIfNewUser(user);
+        // Show appropriate welcome message (new or returning user)
+        console.log('Calling showAppropriateWelcomeMessage...');
+        this.showAppropriateWelcomeMessage();
         
         // Set up auto-save
         this.setupAutoSave();
@@ -109,51 +119,14 @@ class JaskerApp {
         console.log('User data cleared');
     }
 
-    checkIfNewUser(user) {
-        // Check if this is the user's first time
-        const isNewUser = !localStorage.getItem(`jasker_user_${user.uid}_visited`);
-        
-        if (isNewUser) {
-            localStorage.setItem(`jasker_user_${user.uid}_visited`, 'true');
-            this.showWelcomeMessage();
+    showAppropriateWelcomeMessage() {
+        console.log('JaskerApp.showAppropriateWelcomeMessage called');
+        // Use the conversation manager to show the appropriate welcome message
+        if (this.modules.conversation) {
+            this.modules.conversation.showAppropriateWelcomeMessage();
+        } else {
+            console.error('Conversation manager not initialized');
         }
-    }
-
-    showWelcomeMessage() {
-        // Show a welcome message for new users
-        const welcomeDiv = document.createElement('div');
-        welcomeDiv.id = 'welcome-message';
-        welcomeDiv.innerHTML = `
-            <div style="
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: white;
-                padding: 30px;
-                border: 3px solid var(--color-forest-green);
-                border-radius: 8px;
-                z-index: 1000;
-                max-width: 500px;
-                text-align: center;
-                font-family: var(--font-courier);
-            ">
-                <h3 style="color: var(--color-forest-green); margin-bottom: 20px;">Welcome to Jasker!</h3>
-                <p style="margin-bottom: 15px;">I am your personal bard, ready to help you uncover the hero within and craft the epic tales of your journey.</p>
-                <p style="margin-bottom: 20px;">Start by visiting <strong>The Lounge</strong> to begin our conversation, or explore <strong>The Library</strong> to see how your stories will be organized.</p>
-                <button onclick="this.parentElement.parentElement.remove()" style="
-                    background: var(--color-forest-green);
-                    color: white;
-                    border: none;
-                    padding: 10px 20px;
-                    border-radius: 4px;
-                    font-family: var(--font-courier);
-                    cursor: pointer;
-                    font-weight: 600;
-                ">Begin Your Journey</button>
-            </div>
-        `;
-        document.body.appendChild(welcomeDiv);
     }
 
     setupAutoSave() {
@@ -223,16 +196,9 @@ class JaskerApp {
     }
 
     setupServiceWorker() {
-        // Register service worker for offline support (future enhancement)
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js')
-                .then(registration => {
-                    console.log('Service Worker registered:', registration);
-                })
-                .catch(error => {
-                    console.log('Service Worker registration failed:', error);
-                });
-        }
+        // Service worker registration disabled for now
+        // Will be implemented later for offline support
+        console.log('Service worker registration skipped for now');
     }
 
     showError(message) {
@@ -297,6 +263,8 @@ class JaskerApp {
     getVersion() {
         return config.app.version;
     }
+
+
 }
 
 // Initialize the main application

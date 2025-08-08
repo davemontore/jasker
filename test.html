@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Firebase Test</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+</head>
+<body>
+    <h1>Firebase Authentication Test</h1>
+    <button id="test-btn">Test Google Sign-In</button>
+    <div id="status"></div>
+
+    <script>
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyBSheMk79-CssbP-GIzvRw-nMifWZZT4cE",
+            authDomain: "jasker-3568c.firebaseapp.com",
+            projectId: "jasker-3568c",
+            storageBucket: "jasker-3568c.firebasestorage.app",
+            messagingSenderId: "268015491598",
+            appId: "1:268015491598:web:6e5cbe76369baebb8e7a5f"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // Test button
+        document.getElementById('test-btn').addEventListener('click', async () => {
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML = 'Testing...';
+            
+            try {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                const result = await auth.signInWithPopup(provider);
+                statusDiv.innerHTML = `Success! Signed in as: ${result.user.email}`;
+            } catch (error) {
+                statusDiv.innerHTML = `Error: ${error.message}`;
+                console.error('Auth error:', error);
+            }
+        });
+
+        // Listen for auth state changes
+        auth.onAuthStateChanged((user) => {
+            const statusDiv = document.getElementById('status');
+            if (user) {
+                statusDiv.innerHTML = `Currently signed in as: ${user.email}`;
+            } else {
+                statusDiv.innerHTML = 'Not signed in';
+            }
+        });
+    </script>
+</body>
+</html> 

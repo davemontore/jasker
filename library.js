@@ -419,6 +419,20 @@ Tags: ${story.tags.join(', ')}
         // TODO: Implement AI analysis to extract stories, bullets, and threads
         console.log('Processing conversation for library...', conversationData);
     }
+
+    // Add missing functions for app.js
+    clearLibrary() {
+        this.coreStories = [];
+        this.resumeBullets = [];
+        this.contextualThreads = [];
+        this.saveLibraryData();
+        console.log('Library cleared');
+    }
+
+    async loadFromFirebase(userId) {
+        // TODO: Implement Firebase loading
+        console.log('Loading library data from Firebase for user:', userId);
+    }
 }
 
 // Initialize library manager

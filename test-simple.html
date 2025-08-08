@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jasker - Simple Test</title>
+    <style>
+        body {
+            font-family: 'Courier Prime', monospace;
+            background-color: #f5f5dc;
+            color: #2c2c2c;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid #2d5016;
+            border-radius: 8px;
+        }
+        button {
+            background: #2d5016;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Courier Prime', monospace;
+        }
+        button:hover {
+            background: #4a7c59;
+        }
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        #conversation-area {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background: white;
+            margin: 10px 0;
+        }
+        .message {
+            margin: 5px 0;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        .user { background: #e3f2fd; }
+        .jasker { background: #f3e5f5; }
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+</head>
+<body>
+    <h1>Jasker - Simple Test</h1>
+    
+    <div class="test-section">
+        <h2>1. Firebase Connection Test</h2>
+        <button onclick="testFirebaseConnection()">Test Firebase Connection</button>
+        <div id="firebase-status" class="status info">Click button to test Firebase connection</div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Authentication Test</h2>
+        <button onclick="testGoogleSignIn()">Test Google Sign-In</button>
+        <button onclick="testEmailSignIn()">Test Email Sign-In</button>
+        <button onclick="testSignOut()">Sign Out</button>
+        <div id="auth-status" class="status info">Not signed in</div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Voice Test</h2>
+        <button onclick="testVoiceRecognition()">Test Voice Recognition</button>
+        <button onclick="testVoiceSynthesis()">Test Voice Synthesis</button>
+        <div id="voice-status" class="status info">Voice features not tested yet</div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Simple Conversation Test</h2>
+        <div id="conversation-area">
+            <div class="message jasker">Welcome! I'm Jasker, your personal bard. How can I help you today?</div>
+        </div>
+        <input type="text" id="user-input" placeholder="Type your message..." style="width: 70%; padding: 8px; margin-right: 10px;">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBSheMk79-CssbP-GIzvRw-nMifWZZT4cE",
+            authDomain: "jasker-3568c.firebaseapp.com",
+            projectId: "jasker-3568c",
+            storageBucket: "jasker-3568c.firebasestorage.app",
+            messagingSenderId: "268015491598",
+            appId: "1:268015491598:web:6e5cbe76369baebb8e7a5f"
+        };
+
+        let auth = null;
+        let currentUser = null;
+
+        // Initialize Firebase
+        function initializeFirebase() {
+            try {
+                firebase.initializeApp(firebaseConfig);
+                auth = firebase.auth();
+                
+                // Set up auth state listener
+                auth.onAuthStateChanged((user) => {
+                    currentUser = user;
+                    updateAuthStatus(user);
+                });
+
+                // Handle redirect result
+                auth.getRedirectResult().then((result) => {
+                    if (result.user) {
+                        updateStatus('auth-status', `Redirect sign-in successful: ${result.user.email}`, 'success');
+                    }
+                }).catch((error) => {
+                    console.log('No redirect result or error:', error.message);
+                });
+
+                return true;
+            } catch (error) {
+                updateStatus('firebase-status', `Firebase init error: ${error.message}`, 'error');
+                return false;
+            }
+        }
+
+        // Test Firebase connection
+        function testFirebaseConnection() {
+            if (initializeFirebase()) {
+                updateStatus('firebase-status', 'Firebase connected successfully!', 'success');
+            }
+        }
+
+        // Test Google sign-in
+        function testGoogleSignIn() {
+            if (!auth) {
+                updateStatus('auth-status', 'Firebase not initialized. Test connection first.', 'error');
+                return;
+            }
+
+            const googleProvider = new firebase.auth.GoogleAuthProvider();
+            googleProvider.setCustomParameters({
+                prompt: 'select_account'
+            });
+
+            // Use redirect for reliability
+            auth.signInWithRedirect(googleProvider);
+            updateStatus('auth-status', 'Redirecting to Google...', 'info');
+        }
+
+        // Test email sign-in
+        function testEmailSignIn() {
+            if (!auth) {
+                updateStatus('auth-status', 'Firebase not initialized. Test connection first.', 'error');
+                return;
+            }
+
+            const email = prompt('Enter email:');
+            const password = prompt('Enter password:');
+            
+            if (email && password) {
+                auth.signInWithEmailAndPassword(email, password).then((result) => {
+                    updateStatus('auth-status', `Email sign-in successful: ${result.user.email}`, 'success');
+                }).catch((error) => {
+                    updateStatus('auth-status', `Email sign-in error: ${error.message}`, 'error');
+                });
+            }
+        }
+
+        // Test sign out
+        function testSignOut() {
+            if (!auth) {
+                updateStatus('auth-status', 'Firebase not initialized.', 'error');
+                return;
+            }
+
+            auth.signOut().then(() => {
+                updateStatus('auth-status', 'Signed out successfully', 'success');
+            }).catch((error) => {
+                updateStatus('auth-status', `Sign out error: ${error.message}`, 'error');
+            });
+        }
+
+        // Test voice recognition
+        function testVoiceRecognition() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                updateStatus('voice-status', 'Voice recognition is supported!', 'success');
+            } else {
+                updateStatus('voice-status', 'Voice recognition not supported in this browser', 'error');
+            }
+        }
+
+        // Test voice synthesis
+        function testVoiceSynthesis() {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance('Hello, I am Jasker, your personal bard!');
+                speechSynthesis.speak(utterance);
+                updateStatus('voice-status', 'Voice synthesis test completed!', 'success');
+            } else {
+                updateStatus('voice-status', 'Voice synthesis not supported in this browser', 'error');
+            }
+        }
+
+        // Send message
+        function sendMessage() {
+            const input = document.getElementById('user-input');
+            const message = input.value.trim();
+            
+            if (message) {
+                addMessage('user', message);
+                input.value = '';
+                
+                // Simple AI response
+                setTimeout(() => {
+                    const responses = [
+                        "Ah, what a fascinating tale you weave! Tell me more about that experience.",
+                        "Your story speaks of great courage and wisdom. I sense there's more to this chapter.",
+                        "A truly remarkable journey you describe! I'm curious about the people involved.",
+                        "Your words paint a vivid picture of leadership and determination.",
+                        "Such a compelling narrative! I wonder, what was the most significant moment?"
+                    ];
+                    const response = responses[Math.floor(Math.random() * responses.length)];
+                    addMessage('jasker', response);
+                }, 1000);
+            }
+        }
+
+        // Add message to conversation
+        function addMessage(sender, content) {
+            const area = document.getElementById('conversation-area');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            messageDiv.textContent = `${sender === 'user' ? 'You' : 'Jasker'}: ${content}`;
+            area.appendChild(messageDiv);
+            area.scrollTop = area.scrollHeight;
+        }
+
+        // Update auth status
+        function updateAuthStatus(user) {
+            if (user) {
+                updateStatus('auth-status', `Signed in as: ${user.email}`, 'success');
+            } else {
+                updateStatus('auth-status', 'Not signed in', 'info');
+            }
+        }
+
+        // Update status display
+        function updateStatus(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `status ${type}`;
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeFirebase();
+            
+            // Allow Enter key to send messages
+            document.getElementById('user-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
